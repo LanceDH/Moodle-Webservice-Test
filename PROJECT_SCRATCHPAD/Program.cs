@@ -66,26 +66,12 @@ namespace PROJECT_SCRATCHPAD
             }
         }
 
-
-        struct Course
-        {
-            string id;
-            string shortname;
-            string fullname; 
-            string enrolledusercount; 
-            string idnumber; 
-            string visible;
-        }
-
-        struct Calendar_Event
-        {
-            
-        }
-
         static void Main(string[] args)
         {
             // "localhost/login/token.php"
             // "localhost/webservice/rest/server.php"
+
+
 
             //String localhost = "localhost";
             string localhost = "moodle-cvomobile.rhcloud.com";
@@ -147,12 +133,9 @@ namespace PROJECT_SCRATCHPAD
                     Console.WriteLine(e.Message);
                 }
 
-                foreach (var assignment in assignments["events"])
+                foreach (JObject assignment in assignments["events"])
                 {
-                    CalendarEvent c = new CalendarEvent();
-                    c.Id = (string)assignment["id"];
-                    c.Name = (string)assignment["name"];
-                    c.TimeStart = (string)assignment["timestart"];
+                    CalendarEvent c = new CalendarEvent(assignment);
                     Console.WriteLine(c.ToString());
                 }
 

@@ -113,34 +113,97 @@ namespace PROJECT_SCRATCHPAD
                 course.P("userid", userid);
 
                 Console.WriteLine(course.Execute());*/
-            Package calender =
+
+           // // events global
+           //Package calender =
+           //     new Package(localhost + "/webservice/rest/server.php");
+           //     calender.P("wstoken", token);
+           //     calender.P("wsfunction", "core_calendar_get_calendar_events");
+           //     calender.P("moodlewsrestformat", "json");
+           //     calender.P("events[courseids][0]", "2");
+           //     //calender.P("options[userevents]", "1");
+           //     //calender.P("options[userevents]", "1");
+           //     //calender.P("options[siteevents]", "1");
+
+           //     JObject assignments = new JObject();
+           //     try
+           //     {
+           //         assignments = JObject.Parse(calender.Execute());
+           //         //Console.WriteLine(assignments);
+           //     }
+           //     catch (Exception e)
+           //     {
+           //         Console.WriteLine(e.Message);
+           //     }
+
+           //     foreach (JObject assignment in assignments["events"])
+           //     {
+           //         CalendarEvent c = new CalendarEvent(assignment);
+           //         Console.WriteLine(c.ToString());
+           //         Console.WriteLine();
+           //     }
+
+
+                string i = "";
+
+                // Asignments per course
+                Package assignment =
                 new Package(localhost + "/webservice/rest/server.php");
-                calender.P("wstoken", token);
-                calender.P("wsfunction", "core_calendar_get_calendar_events");
-                calender.P("moodlewsrestformat", "json");
-                calender.P("events[courseids][0]", "2");
-                //calender.P("options[userevents]", "1");
-                //calender.P("options[userevents]", "1");
-                //calender.P("options[siteevents]", "1");
+                assignment.P("wstoken", token);
+                assignment.P("wsfunction", "mod_assign_get_assignments");
+                assignment.P("moodlewsrestformat", "json");
+                assignment.P("courseids[0]", "4");
 
                 JObject assignments = new JObject();
                 try
                 {
-                    assignments = JObject.Parse(calender.Execute());
+                    assignments = JObject.Parse(assignment.Execute());
+
+                    foreach (JObject c in assignments["courses"])
+                    {
+                        foreach (JObject ass in c["assignments"])
+                        {
+                            //CalendarEvent c = new CalendarEvent(assignment);
+                            Console.WriteLine(ass["id"]);
+                            i = "" + ass["id"];
+                            Console.WriteLine();
+                        }
+                    }
+
+
+                   // Console.WriteLine(assignments);
+                    //Console.WriteLine(Convert.ToInt32(assignments["courses"]));
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }
 
-                foreach (JObject assignment in assignments["events"])
+
+
+
+
+                // Asignments per course
+                Package grade =
+                new Package(localhost + "/webservice/rest/server.php");
+                grade.P("wstoken", token);
+                grade.P("wsfunction", "mod_assign_get_grades");
+                grade.P("moodlewsrestformat", "json");
+                grade.P("assignmentids[0]", i);
+
+                JObject grades = new JObject();
+                try
                 {
-                    CalendarEvent c = new CalendarEvent(assignment);
-                    Console.WriteLine(c.ToString());
+                    grades = JObject.Parse(grade.Execute());
+                    //Console.WriteLine(assignments);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
                 }
 
-                
-            
+                Console.WriteLine(grades);
+
             Console.Read();
         }
     }

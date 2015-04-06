@@ -51,7 +51,7 @@ namespace PROJECT_SCRATCHPAD
 
         public override string ToString()
         {
-            return string.Format("{0}: {1} \r\n Info: {2} \r\n Deadline: {3} {4}", Id, Name, Description, TimeStart.ToLongDateString(), TimeStart.ToShortTimeString());
+            return string.Format("{0}: {1} \r\n Info:  {2} \r\n  Deadline: {3} {4}", Id, Name, Description, TimeStart.ToLongDateString(), TimeStart.ToShortTimeString());
         }
     }
 }

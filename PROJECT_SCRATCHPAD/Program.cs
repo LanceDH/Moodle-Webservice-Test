@@ -143,66 +143,102 @@ namespace PROJECT_SCRATCHPAD
            //         Console.WriteLine();
            //     }
 
+                foreach (BLL.Assignment ass in Model.AssingmentSelectAll(localhost, token, 4))
+	            {
+                    //CalendarEvent c = new CalendarEvent(assignment);
+                    Console.WriteLine(ass.Id + ":" + ass.Name);
 
-                string i = "";
+                    // Asignments per course
+                    Package grade =
+                    new Package(localhost + "/webservice/rest/server.php");
+                    grade.P("wstoken", token);
+                    grade.P("wsfunction", "mod_assign_get_grades");
+                    grade.P("moodlewsrestformat", "json");
+                    grade.P("assignmentids[0]", ass.Id.ToString());
 
-                // Asignments per course
-                Package assignment =
-                new Package(localhost + "/webservice/rest/server.php");
-                assignment.P("wstoken", token);
-                assignment.P("wsfunction", "mod_assign_get_assignments");
-                assignment.P("moodlewsrestformat", "json");
-                assignment.P("courseids[0]", "4");
-
-                JObject assignments = new JObject();
-                try
-                {
-                    assignments = JObject.Parse(assignment.Execute());
-
-                    foreach (JObject c in assignments["courses"])
+                    JObject grades = new JObject();
+                    try
                     {
-                        foreach (JObject ass in c["assignments"])
-                        {
-                            //CalendarEvent c = new CalendarEvent(assignment);
-                            Console.WriteLine(ass["id"]);
-                            i = "" + ass["id"];
-                            Console.WriteLine();
-                        }
+                        grades = JObject.Parse(grade.Execute());
+                        //Console.WriteLine(assignments);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
                     }
 
-
-                   // Console.WriteLine(assignments);
-                    //Console.WriteLine(Convert.ToInt32(assignments["courses"]));
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
+                    Console.WriteLine(grades);
 
 
+                    Console.WriteLine();
+	            }
+
+            
+                
+
+                //// Asignments per course
+                //Package assignment =
+                //new Package(localhost + "/webservice/rest/server.php");
+                //assignment.P("wstoken", token);
+                //assignment.P("wsfunction", "mod_assign_get_assignments");
+                //assignment.P("moodlewsrestformat", "json");
+                //assignment.P("courseids[0]", "4");
+
+                //JObject assignments = new JObject();
+                //try
+                //{
+                //    assignments = JObject.Parse(assignment.Execute());
+                //    //Console.WriteLine(assignments);
+
+
+                //    foreach (JObject c in assignments["courses"])
+                //    {
+                //        foreach (JObject ass in c["assignments"])
+                //        {
+                //            //CalendarEvent c = new CalendarEvent(assignment);
+                //            Console.WriteLine(ass["id"]);
+
+                //            // Asignments per course
+                //            Package grade =
+                //            new Package(localhost + "/webservice/rest/server.php");
+                //            grade.P("wstoken", token);
+                //            grade.P("wsfunction", "mod_assign_get_grades");
+                //            grade.P("moodlewsrestformat", "json");
+                //            grade.P("assignmentids[0]", ass["id"].ToString());
+
+                //            JObject grades = new JObject();
+                //            try
+                //            {
+                //                grades = JObject.Parse(grade.Execute());
+                //                //Console.WriteLine(assignments);
+                //            }
+                //            catch (Exception e)
+                //            {
+                //                Console.WriteLine(e.Message);
+                //            }
+
+                //            Console.WriteLine(grades);
+
+
+                //            Console.WriteLine();
+
+                //        }
+                //    }
+
+
+                //   // Console.WriteLine(assignments);
+                //    //Console.WriteLine(Convert.ToInt32(assignments["courses"]));
+                //}
+                //catch (Exception e)
+                //{
+                //    Console.WriteLine(e.Message);
+                //}
 
 
 
-                // Asignments per course
-                Package grade =
-                new Package(localhost + "/webservice/rest/server.php");
-                grade.P("wstoken", token);
-                grade.P("wsfunction", "mod_assign_get_grades");
-                grade.P("moodlewsrestformat", "json");
-                grade.P("assignmentids[0]", i);
 
-                JObject grades = new JObject();
-                try
-                {
-                    grades = JObject.Parse(grade.Execute());
-                    //Console.WriteLine(assignments);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
 
-                Console.WriteLine(grades);
+                
 
             Console.Read();
         }

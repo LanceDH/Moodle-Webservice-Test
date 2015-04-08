@@ -7,6 +7,7 @@ using System.Net;
 using System.IO;
 using Json;
 using Newtonsoft.Json.Linq;
+using Moodle;
 
 namespace PROJECT_SCRATCHPAD
 {
@@ -143,11 +144,22 @@ namespace PROJECT_SCRATCHPAD
            //         Console.WriteLine();
            //     }
 
-                foreach (BLL.Assignment ass in Model.AssingmentSelectAll(localhost, token, 4))
+                foreach (Moodle.BLL.Assignment ass in Model.AssingmentSelectAll(localhost, token, 4))
 	            {
                     //CalendarEvent c = new CalendarEvent(assignment);
-                    Console.WriteLine(ass.Id + ":" + ass.Name);
+                    Console.WriteLine(ass.Id + ": " + ass.Name);
 
+
+                    foreach (Moodle.BLL.Grade grade in Model.GradeSelectAll(localhost, token, ass.Id))
+                    {
+                        Console.WriteLine(grade.UserId + ": " + grade.Score);
+                    }
+
+                    string userGrade = Model.GradeSelectOne(localhost, token, ass.Id, Convert.ToInt32(userid));
+                    
+                    Console.WriteLine("Your score: " + (!userGrade.Equals("-1")? userGrade : "No score yet"));
+
+                    /*
                     // Asignments per course
                     Package grade =
                     new Package(localhost + "/webservice/rest/server.php");
@@ -170,7 +182,7 @@ namespace PROJECT_SCRATCHPAD
                     Console.WriteLine(grades);
 
 
-                    Console.WriteLine();
+                    Console.WriteLine();*/
 	            }
 
             

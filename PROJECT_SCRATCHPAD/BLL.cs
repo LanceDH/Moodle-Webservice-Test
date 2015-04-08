@@ -5,8 +5,29 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace PROJECT_SCRATCHPAD.BLL
+namespace Moodle.BLL
 {
+    public class Grade
+    {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public int AttemptNumber { get; set; }
+        public DateTime TimeModified { get; set; }
+        public int Grader { get; set; }
+        public string Score { get; set; }
+
+        public Grade(JObject jSon)
+        {
+            this.Id = Convert.ToInt32((string)jSon["id"]);
+            this.UserId = Convert.ToInt32((string)jSon["userid"]);
+            this.AttemptNumber = Convert.ToInt32((string)jSon["attemptnumber"]);
+            int unixTimeModified = Convert.ToInt32((string)jSon["timemodified"]);
+            this.TimeModified = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(unixTimeModified);
+            this.Grader = Convert.ToInt32((string)jSon["grader"]);
+            this.Score = (string)jSon["grade"];
+        }
+    }
+
     public class Assignment
     {
         public int Id { get; set; }    //assignment id

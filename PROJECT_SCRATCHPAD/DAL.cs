@@ -9,7 +9,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using Json;
 
-namespace PROJECT_SCRATCHPAD.DAL
+namespace Moodle.DAL
 {
 
     class Package
@@ -67,13 +67,12 @@ namespace PROJECT_SCRATCHPAD.DAL
 
     public class Assignment
     {
-        public static List<PROJECT_SCRATCHPAD.BLL.Assignment> SelectAll(string url, string token, int courseId)
+        public static List<Moodle.BLL.Assignment> SelectAll(string url, string token, int courseId)
         {
             List<BLL.Assignment> assignments = new List<BLL.Assignment>();
 
 
-            Package pAssignment =
-                new Package(url + "/webservice/rest/server.php");
+            Package pAssignment = new Package(url + "/webservice/rest/server.php");
             pAssignment.P("wstoken", token);
             pAssignment.P("wsfunction", "mod_assign_get_assignments");
             pAssignment.P("moodlewsrestformat", "json");
@@ -92,7 +91,7 @@ namespace PROJECT_SCRATCHPAD.DAL
                     BLL.Assignment a = new BLL.Assignment(c);
                     assignments.Add(a);
                 }
-                    
+
             }
             catch (Exception e)
             {
@@ -102,6 +101,74 @@ namespace PROJECT_SCRATCHPAD.DAL
 
 
             return assignments;
+        }
+
+    }
+
+    public class Grade
+    {
+        public static List<Moodle.BLL.Grade> SelectAll(string url, string token, int assignmentId)
+        {
+            List<BLL.Grade> grades = new List<BLL.Grade>();
+
+
+            Package pGrade = new Package(url + "/webservice/rest/server.php");
+            pGrade.P("wstoken", token);
+            pGrade.P("wsfunction", "mod_assign_get_grades");
+            pGrade.P("moodlewsrestformat", "json");
+            pGrade.P("assignmentids[0]", "" + assignmentId);
+
+            JObject jAssignments = new JObject();
+
+            try
+            {
+                jAssignments = JObject.Parse(pGrade.Execute());
+                //JObject test = (JObject)jAssignments["warnings"];
+                
+                    
+                if (!jAssignments["assignments"].HasValues)
+	            {
+                    return grades;
+	            }
+
+                JObject jGrades = (JObject)jAssignments["assignments"][0];
+                //Console.WriteLine(assignments);
+
+
+                foreach (JObject g in jGrades["grades"])
+                {
+                    BLL.Grade grade = new BLL.Grade(g);
+                    grades.Add(grade);
+                }
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e.Message);
+            }
+            
+
+            /*
+                jCourses = JObject.Parse(pAssignment.Execute());
+                JObject jAssignments = (JObject)jCourses["courses"][0];
+                //Console.WriteLine(assignments);
+
+
+                foreach (JObject c in jAssignments["assignments"])
+                {
+                    BLL.Assignment a = new BLL.Assignment(c);
+                    assignments.Add(a);
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }*/
+
+
+
+            return grades;
         }
 
     }

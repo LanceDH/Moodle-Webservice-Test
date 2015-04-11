@@ -82,21 +82,51 @@ namespace PROJECT_SCRATCHPAD
                 new Package(localhost + "/login/token.php");
                 //px.P("username", "admin");
                 //px.P("password", "Boerderijm1n#s");
-                px.P("username", "admin");
+                px.P("username", "cvomobile");
                 px.P("password", "Boerderijm1n#s");
                 px.P("service", "moodle_mobile_app");
-                
-                string token = (String)JsonParser.FromJson(px.Execute())["token"];
-                Console.WriteLine(token);
 
-            Package user =
+                //string token = (String)JsonParser.FromJson(px.Execute())["token"];
+                string token = "203f82380a5ca94b230ed5ee0e1fd061";//
+                Console.WriteLine("Token: " + token);
+
+                Console.Write("username: ");
+                string userName = Console.ReadLine();
+
+                //Package puser = new Package(localhost + "/webservice/rest/server.php");
+                //puser.P("wstoken", token);
+                //puser.P("wsfunction", "core_user_get_users_by_field");
+                //puser.P("moodlewsrestformat", "json");
+                //puser.P("field", "id");
+                //puser.P("values[0]", "9");
+                Package puser = new Package(localhost + "/webservice/rest/server.php");
+                puser.P("wstoken", token);
+                puser.P("wsfunction", "core_user_get_users");
+                puser.P("moodlewsrestformat", "json");
+                puser.P("criteria[0][key]", "username");
+                puser.P("criteria[0][value]", userName);
+                string userid = "9";//Convert.ToString(JsonParser.FromJson());
+                try
+                {
+                    JObject jUser = JObject.Parse(puser.Execute());
+//string userid = "9";//Convert.ToString(JsonParser.FromJson());
+                    Console.WriteLine("User Id: " + jUser);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                
+
+
+           /* Package user =
                 new Package(localhost + "/webservice/rest/server.php");
                 user.P("wstoken", token);
                 user.P("wsfunction", "core_webservice_get_site_info");
                 user.P("moodlewsrestformat", "json");
                 
                 string userid = Convert.ToString(JsonParser.FromJson(user.Execute())["userid"]);
-                Console.WriteLine("User Id: " + userid);
+                Console.WriteLine("User Id: " + userid);*/
 
             Package course =
                 new Package(localhost + "/webservice/rest/server.php");
@@ -104,7 +134,9 @@ namespace PROJECT_SCRATCHPAD
                 course.P("wsfunction", "core_enrol_get_users_courses");
                 course.P("moodlewsrestformat", "json");
                 course.P("userid", userid);
-                Console.WriteLine(course.Execute());
+                Console.WriteLine("Courses: " + course.Execute());
+
+                Console.WriteLine();
 
             /*Package courseInfo =
                 new Package(localhost + "/webservice/rest/server.php");
@@ -158,6 +190,7 @@ namespace PROJECT_SCRATCHPAD
                     string userGrade = Model.GradeSelectOne(localhost, token, ass.Id, Convert.ToInt32(userid));
                     
                     Console.WriteLine("Your score: " + (!userGrade.Equals("-1")? userGrade : "No score yet"));
+                    Console.WriteLine();
 
                     /*
                     // Asignments per course

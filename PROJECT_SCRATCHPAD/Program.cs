@@ -84,33 +84,42 @@ namespace PROJECT_SCRATCHPAD
                 //px.P("password", "Boerderijm1n#s");
                 px.P("username", "cvomobile");
                 px.P("password", "Boerderijm1n#s");
-                px.P("service", "moodle_mobile_app");
+                px.P("service", "mobile");
 
-                //string token = (String)JsonParser.FromJson(px.Execute())["token"];
-                string token = "203f82380a5ca94b230ed5ee0e1fd061";//
+                string token = (String)JsonParser.FromJson(px.Execute())["token"];
+                //string token = "203f82380a5ca94b230ed5ee0e1fd061";//
                 Console.WriteLine("Token: " + token);
 
                 Console.Write("username: ");
                 string userName = Console.ReadLine();
 
-                //Package puser = new Package(localhost + "/webservice/rest/server.php");
-                //puser.P("wstoken", token);
-                //puser.P("wsfunction", "core_user_get_users_by_field");
-                //puser.P("moodlewsrestformat", "json");
-                //puser.P("field", "id");
-                //puser.P("values[0]", "9");
                 Package puser = new Package(localhost + "/webservice/rest/server.php");
                 puser.P("wstoken", token);
-                puser.P("wsfunction", "core_user_get_users");
+                puser.P("wsfunction", "core_user_get_users_by_field");
                 puser.P("moodlewsrestformat", "json");
-                puser.P("criteria[0][key]", "username");
-                puser.P("criteria[0][value]", userName);
-                string userid = "9";//Convert.ToString(JsonParser.FromJson());
+                puser.P("field", "email");
+                puser.P("values[0]", userName);
+
+                //Package puser = new Package(localhost + "/webservice/rest/server.php");
+                //puser.P("wstoken", token);
+                //puser.P("wsfunction", "core_user_get_users");
+                //puser.P("moodlewsrestformat", "json");
+                //puser.P("criteria[0][key]", "id");
+                //puser.P("criteria[0][value]", "15");
+                string userid = "1";//Convert.ToString(JsonParser.FromJson());
                 try
                 {
-                    JObject jUser = JObject.Parse(puser.Execute());
+                    JArray jUser = JArray.Parse(puser.Execute());
+                    userid = (string)jUser[0]["id"];
+                    Console.WriteLine("User Id: " + userid);
+
+                    //JObject jUser = JObject.Parse(puser.Execute());
+                    ////userid = (string)jUser[0]["id"];
+                    //Console.WriteLine("User Id: " + jUser);
+                    //
 //string userid = "9";//Convert.ToString(JsonParser.FromJson());
-                    Console.WriteLine("User Id: " + jUser);
+
+                    
                 }
                 catch (Exception e)
                 {
@@ -134,7 +143,8 @@ namespace PROJECT_SCRATCHPAD
                 course.P("wsfunction", "core_enrol_get_users_courses");
                 course.P("moodlewsrestformat", "json");
                 course.P("userid", userid);
-                Console.WriteLine("Courses: " + course.Execute());
+                JArray jCourse = JArray.Parse(course.Execute());
+                Console.WriteLine("Courses: " + jCourse);
 
                 Console.WriteLine();
 
@@ -176,7 +186,7 @@ namespace PROJECT_SCRATCHPAD
            //         Console.WriteLine();
            //     }
 
-                foreach (Moodle.BLL.Assignment ass in Model.AssingmentSelectAll(localhost, token, 4))
+                foreach (Moodle.BLL.Assignment ass in Model.AssingmentSelectAll(localhost, token, Convert.ToInt32( jCourse[0]["id"])))
 	            {
                     //CalendarEvent c = new CalendarEvent(assignment);
                     Console.WriteLine(ass.Id + ": " + ass.Name);

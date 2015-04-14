@@ -16,56 +16,56 @@ namespace PROJECT_SCRATCHPAD
 
     class Program
     {
-        class Package
-        {
-            string url;
-            List<KeyValuePair<string, string>> parameters;
+        //class Package
+        //{
+        //    string url;
+        //    List<KeyValuePair<string, string>> parameters;
 
-            // Stel Url in
-            public Package(String url)
-            {
-                this.url = url;
-                parameters = new List<KeyValuePair<string, string>>();
-            }
+        //    // Stel Url in
+        //    public Package(String url)
+        //    {
+        //        this.url = url;
+        //        parameters = new List<KeyValuePair<string, string>>();
+        //    }
 
-            // Voeg Input Parameters toe
-            public void P(string key, string value){
-                parameters.Add(new KeyValuePair<string, string>(key, value));
-            }
+        //    // Voeg Input Parameters toe
+        //    public void P(string key, string value){
+        //        parameters.Add(new KeyValuePair<string, string>(key, value));
+        //    }
 
 
-            // Voer [Web Service Request] uit
-            public String Execute()
-            {
-                string output = "";
-                string param_string = "";
+        //    // Voer [Web Service Request] uit
+        //    public String Execute()
+        //    {
+        //        string output = "";
+        //        string param_string = "";
 
-                foreach (KeyValuePair<string, string> dx in parameters)
-                    param_string += dx.Key + "=" + dx.Value + "&";
+        //        foreach (KeyValuePair<string, string> dx in parameters)
+        //            param_string += dx.Key + "=" + dx.Value + "&";
 
-                byte[] buffer = Encoding.ASCII.GetBytes(param_string);
-                string lex = "http://" + url + "?" + param_string;
+        //        byte[] buffer = Encoding.ASCII.GetBytes(param_string);
+        //        string lex = "http://" + url + "?" + param_string;
 
-                //Console.WriteLine(lex);
+        //        //Console.WriteLine(lex);
 
-                HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(lex);
-                WebReq.Method = WebRequestMethods.Http.Post;
-                WebReq.ContentType = "application/x-www-form-urlencoded";
+        //        HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(lex);
+        //        WebReq.Method = WebRequestMethods.Http.Post;
+        //        WebReq.ContentType = "application/x-www-form-urlencoded";
 
-                WebReq.ContentLength = buffer.Length;
-                using (Stream PostData = WebReq.GetRequestStream())
-                    PostData.Write(buffer, 0, buffer.Length);
+        //        WebReq.ContentLength = buffer.Length;
+        //        using (Stream PostData = WebReq.GetRequestStream())
+        //            PostData.Write(buffer, 0, buffer.Length);
 
-                HttpWebResponse WebResp = (HttpWebResponse)WebReq.GetResponse();
-                using (StreamReader reader = new StreamReader(WebResp.GetResponseStream()))
-                    output = reader.ReadToEnd();
+        //        HttpWebResponse WebResp = (HttpWebResponse)WebReq.GetResponse();
+        //        using (StreamReader reader = new StreamReader(WebResp.GetResponseStream()))
+        //            output = reader.ReadToEnd();
 
-                //Console.WriteLine(output);
+        //        //Console.WriteLine(output);
 
-                return output;
+        //        return output;
                 
-            }
-        }
+        //    }
+        //}
 
         static void Main(string[] args)
         {
@@ -78,22 +78,26 @@ namespace PROJECT_SCRATCHPAD
             string localhost = "moodle-cvomobile.rhcloud.com";
             //String localhost = "moodle.cvoantwerpen.be";
 
-            Package px =
-                new Package(localhost + "/login/token.php");
-                //px.P("username", "admin");
-                //px.P("password", "Boerderijm1n#s");
-                px.P("username", "cvomobile");
-                px.P("password", "Boerderijm1n#s");
-                px.P("service", "mobile");
+            string token = Moodle.Model.RequestTokenForService(localhost, "cvomobile", "Boerderijm1n#s", "mobile");
 
-                string token = (String)JsonParser.FromJson(px.Execute())["token"];
+            //Moodle.DAL.Package px = new Moodle.DAL.Package(localhost + "/login/token.php");
+            //    //px.P("username", "admin");
+            //    //px.P("password", "Boerderijm1n#s");
+            //    px.P("username", "cvomobile");
+            //    px.P("password", "Boerderijm1n#s");
+            //    px.P("service", "mobile");
+
+            //    string token = (String)JsonParser.FromJson(px.Execute())["token"];
+
+            
+
                 //string token = "203f82380a5ca94b230ed5ee0e1fd061";//
                 Console.WriteLine("Token: " + token);
 
                 Console.Write("username: ");
                 string userName = Console.ReadLine();
 
-                Package puser = new Package(localhost + "/webservice/rest/server.php");
+                Moodle.DAL.Package puser = new Moodle.DAL.Package(localhost + "/webservice/rest/server.php");
                 puser.P("wstoken", token);
                 puser.P("wsfunction", "core_user_get_users_by_field");
                 puser.P("moodlewsrestformat", "json");
@@ -137,8 +141,8 @@ namespace PROJECT_SCRATCHPAD
                 string userid = Convert.ToString(JsonParser.FromJson(user.Execute())["userid"]);
                 Console.WriteLine("User Id: " + userid);*/
 
-            Package course =
-                new Package(localhost + "/webservice/rest/server.php");
+                Moodle.DAL.Package course =
+                new Moodle.DAL.Package(localhost + "/webservice/rest/server.php");
                 course.P("wstoken", token);
                 course.P("wsfunction", "core_enrol_get_users_courses");
                 course.P("moodlewsrestformat", "json");

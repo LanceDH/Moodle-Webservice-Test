@@ -30,5 +30,10 @@ namespace Moodle
             return "-1";
         }
 
+        public static string RequestTokenForService(string url, string accountName, string password, string service)
+        {
+            return DAL.Token.RequestTokenForService(url, accountName, password, service);
+        }
+
     }
 }

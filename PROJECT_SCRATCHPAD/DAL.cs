@@ -84,6 +84,8 @@ namespace Moodle.DAL
             try
             {
                 jCourses = JObject.Parse(pAssignment.Execute());
+                //jCourses.TryGetValue("warnings", out jWarning);
+
                 //Console.WriteLine(jCourses);
 
                 if (!jCourses["warnings"].ToString().Equals("[]"))//check for errors
@@ -112,6 +114,44 @@ namespace Moodle.DAL
             return assignments;
         }
 
+    }
+
+    public class Token
+    {
+        public static string RequestTokenForService(string url, string accountName, string password, string service)
+        {
+            string token = "";
+
+            Package pToken = new Moodle.DAL.Package(url + "/login/token.php");
+            pToken.P("username", accountName);
+            pToken.P("password", password);
+            pToken.P("service", service);
+
+            JObject jToken = new JObject();
+            try
+            {
+                jToken = JObject.Parse(pToken.Execute());
+                //jCourses.TryGetValue("warnings", out jWarning);
+
+                //Console.WriteLine(jCourses);
+
+                //if (!jCourses["warnings"].ToString().Equals("[]"))//check for errors
+                //{
+                //    throw new Exception("mod_assign_get_assignments: " + jCourses["warnings"][0]);
+                //}
+
+                token = (string)jToken["token"];
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            //token = (String)JsonParser.FromJson(pToken.Execute())["token"];
+
+            return token;
+        }
     }
 
     public class Grade

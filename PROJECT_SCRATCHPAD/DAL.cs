@@ -240,7 +240,6 @@ namespace Moodle.DAL
                 JArray jUser = JArray.Parse(puser.Execute());
                 id = Convert.ToInt32(jUser[0]["id"]);
 
-
             }
             catch (Exception e)
             {
@@ -248,6 +247,34 @@ namespace Moodle.DAL
             }
 
             return id;
+        }
+    }
+
+    public class Course
+    {
+        public static List<BLL.Course> GetUserEnrolledCourses(string url, string token, int userId)
+        {
+            List<BLL.Course> courses = new List<BLL.Course>();
+
+            Moodle.DAL.Package pCourse =
+                new Moodle.DAL.Package(url + "/webservice/rest/server.php");
+            pCourse.P("wstoken", token);
+            pCourse.P("wsfunction", "core_enrol_get_users_courses");
+            pCourse.P("moodlewsrestformat", "json");
+            pCourse.P("userid", "" + userId);
+            JArray jCourses = JArray.Parse(pCourse.Execute());
+            //Console.WriteLine("Courses: " + jCourses);
+
+            foreach (JObject c in jCourses)
+            {
+                BLL.Course course = new BLL.Course(c);
+                courses.Add(course);
+                //Console.WriteLine(course.Id + " " + course.ShortName + " " + course.FullName);
+            }
+
+            Console.WriteLine();
+
+            return courses;
         }
     }
 }

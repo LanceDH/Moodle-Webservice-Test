@@ -41,5 +41,10 @@ namespace Moodle
             return DAL.User.GetUserIdByEmail(url, token, email);
         }
 
+        public static List<BLL.Course> GetUserEnrolledCourses(string url, string token, int userId)
+        {
+            return DAL.Course.GetUserEnrolledCourses(url, token, userId);
+        }
+
     }
 }

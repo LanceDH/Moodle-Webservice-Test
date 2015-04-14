@@ -42,10 +42,10 @@ namespace Moodle.BLL
 
         public Assignment(JObject jSon)
         {
-            this.Id = Convert.ToInt32((string)jSon["id"]);
-            this.Course = Convert.ToInt32( (string)jSon["course"]);
+            this.Id = Convert.ToInt32(jSon["id"]);
+            this.Course = Convert.ToInt32(jSon["course"]);
             this.Name = (string)jSon["name"];
-            this.DueDate = Convert.ToInt32( (string)jSon["duedate"]);
+            this.DueDate = Convert.ToInt32( jSon["duedate"]);
             this.AllowSubmissionsFromDate = Convert.ToInt32( (string)jSon["allowsubmissionsfromdate"]);
             this.Grade = Convert.ToInt32( (string)jSon["grade"]);
             this.TimeModified = Convert.ToInt32( (string)jSon["timemodified"]);
@@ -99,6 +99,20 @@ namespace Moodle.BLL
         public override string ToString()
         {
             return string.Format("{0}: {1} \r\n Info:  {2} \r\n  Deadline: {3} {4}", Id, Name, Description, TimeStart.ToLongDateString(), TimeStart.ToShortTimeString());
+        }
+    }
+
+    public class Course
+    {
+        public int Id { get; set; }
+        public string ShortName { get; set; }
+        public string FullName { get; set; }
+
+        public Course(JObject jSon)
+        {
+            this.Id = Convert.ToInt32(jSon["id"]);
+            this.ShortName = (string)jSon["shortname"];
+            this.FullName = (string)jSon["fullname"];
         }
     }
 }

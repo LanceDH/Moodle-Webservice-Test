@@ -12,6 +12,8 @@ using Json;
 namespace Moodle.DAL
 {
 
+    
+
     class Package
     {
         string url;
@@ -82,8 +84,15 @@ namespace Moodle.DAL
             try
             {
                 jCourses = JObject.Parse(pAssignment.Execute());
-                JObject jAssignments = (JObject)jCourses["courses"][0];
-                //Console.WriteLine(assignments);
+                //Console.WriteLine(jCourses);
+
+                if (!jCourses["warnings"].ToString().Equals("[]"))//check for errors
+                {
+                    throw new Exception("mod_assign_get_assignments: " + jCourses["warnings"][0]);
+                }
+
+               JObject jAssignments = (JObject)jCourses["courses"][0];
+                
 
 
                 foreach (JObject c in jAssignments["assignments"])

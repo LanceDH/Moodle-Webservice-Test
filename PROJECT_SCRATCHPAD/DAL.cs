@@ -221,4 +221,33 @@ namespace Moodle.DAL
         }
 
     }
+
+    public class User
+    {
+        public static int GetUserIdByEmail(string url, string token, string email)
+        {
+            int id = -1;
+
+            Moodle.DAL.Package puser = new Moodle.DAL.Package(url + "/webservice/rest/server.php");
+            puser.P("wstoken", token);
+            puser.P("wsfunction", "core_user_get_users_by_field");
+            puser.P("moodlewsrestformat", "json");
+            puser.P("field", "email");
+            puser.P("values[0]", email);
+
+            try
+            {
+                JArray jUser = JArray.Parse(puser.Execute());
+                id = Convert.ToInt32(jUser[0]["id"]);
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            return id;
+        }
+    }
 }

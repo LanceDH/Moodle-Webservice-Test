@@ -35,5 +35,11 @@ namespace Moodle
             return DAL.Token.RequestTokenForService(url, accountName, password, service);
         }
 
+
+        public static int GetUserIdByEmail(string url, string token, string email)
+        {
+            return DAL.User.GetUserIdByEmail(url, token, email);
+        }
+
     }
 }

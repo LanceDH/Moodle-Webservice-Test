@@ -69,84 +69,27 @@ namespace PROJECT_SCRATCHPAD
 
         static void Main(string[] args)
         {
-            // "localhost/login/token.php"
-            // "localhost/webservice/rest/server.php"
+            string url = "moodle-cvomobile.rhcloud.com";
 
+            // Get token
+            string token = Moodle.Model.RequestTokenForService(url, "cvomobile", "Boerderijm1n#s", "mobile");
 
+            Console.WriteLine("Token: " + token);
 
-            //String localhost = "localhost";
-            string localhost = "moodle-cvomobile.rhcloud.com";
-            //String localhost = "moodle.cvoantwerpen.be";
+            // Get user Id using email
+                Console.Write("email: ");
+                string email = Console.ReadLine();
 
-            string token = Moodle.Model.RequestTokenForService(localhost, "cvomobile", "Boerderijm1n#s", "mobile");
+                int userid = Moodle.Model.GetUserIdByEmail(url, token, email);
+                Console.WriteLine("userid:" + userid);
 
-            //Moodle.DAL.Package px = new Moodle.DAL.Package(localhost + "/login/token.php");
-            //    //px.P("username", "admin");
-            //    //px.P("password", "Boerderijm1n#s");
-            //    px.P("username", "cvomobile");
-            //    px.P("password", "Boerderijm1n#s");
-            //    px.P("service", "mobile");
-
-            //    string token = (String)JsonParser.FromJson(px.Execute())["token"];
-
-            
-
-                //string token = "203f82380a5ca94b230ed5ee0e1fd061";//
-                Console.WriteLine("Token: " + token);
-
-                Console.Write("username: ");
-                string userName = Console.ReadLine();
-
-                Moodle.DAL.Package puser = new Moodle.DAL.Package(localhost + "/webservice/rest/server.php");
-                puser.P("wstoken", token);
-                puser.P("wsfunction", "core_user_get_users_by_field");
-                puser.P("moodlewsrestformat", "json");
-                puser.P("field", "email");
-                puser.P("values[0]", userName);
-
-                //Package puser = new Package(localhost + "/webservice/rest/server.php");
-                //puser.P("wstoken", token);
-                //puser.P("wsfunction", "core_user_get_users");
-                //puser.P("moodlewsrestformat", "json");
-                //puser.P("criteria[0][key]", "id");
-                //puser.P("criteria[0][value]", "15");
-                string userid = "1";//Convert.ToString(JsonParser.FromJson());
-                try
-                {
-                    JArray jUser = JArray.Parse(puser.Execute());
-                    userid = (string)jUser[0]["id"];
-                    Console.WriteLine("User Id: " + userid);
-
-                    //JObject jUser = JObject.Parse(puser.Execute());
-                    ////userid = (string)jUser[0]["id"];
-                    //Console.WriteLine("User Id: " + jUser);
-                    //
-//string userid = "9";//Convert.ToString(JsonParser.FromJson());
-
-                    
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-                
-
-
-           /* Package user =
-                new Package(localhost + "/webservice/rest/server.php");
-                user.P("wstoken", token);
-                user.P("wsfunction", "core_webservice_get_site_info");
-                user.P("moodlewsrestformat", "json");
-                
-                string userid = Convert.ToString(JsonParser.FromJson(user.Execute())["userid"]);
-                Console.WriteLine("User Id: " + userid);*/
-
+            // get Courses user is enrolled in
                 Moodle.DAL.Package course =
-                new Moodle.DAL.Package(localhost + "/webservice/rest/server.php");
+                new Moodle.DAL.Package(url + "/webservice/rest/server.php");
                 course.P("wstoken", token);
                 course.P("wsfunction", "core_enrol_get_users_courses");
                 course.P("moodlewsrestformat", "json");
-                course.P("userid", userid);
+                course.P("userid", "" + userid);
                 JArray jCourse = JArray.Parse(course.Execute());
                 Console.WriteLine("Courses: " + jCourse);
 
@@ -190,19 +133,19 @@ namespace PROJECT_SCRATCHPAD
            //         Console.WriteLine();
            //     }
             //Convert.ToInt32( jCourse[0]["id"])
-                foreach (Moodle.BLL.Assignment ass in Model.AssingmentSelectAll(localhost, token, 4))
+                foreach (Moodle.BLL.Assignment ass in Model.AssingmentSelectAll(url, token, 4))
 	            {
                     //CalendarEvent c = new CalendarEvent(assignment);
                     Console.WriteLine(ass.Id + ": " + ass.Name);
 
                     //all scores
-                    foreach (Moodle.BLL.Grade grade in Model.GradeSelectAll(localhost, token, ass.Id))
+                    foreach (Moodle.BLL.Grade grade in Model.GradeSelectAll(url, token, ass.Id))
                     {
                         Console.WriteLine(grade.UserId + ": " + grade.Score);
                     }
                     
                     //only scores of user
-                    string userGrade = Model.GradeSelectOne(localhost, token, ass.Id, Convert.ToInt32(userid));
+                    string userGrade = Model.GradeSelectOne(url, token, ass.Id, userid);
                     
                     Console.WriteLine("Your score: " + (!userGrade.Equals("-1")? userGrade : "No score yet"));
                     Console.WriteLine();
